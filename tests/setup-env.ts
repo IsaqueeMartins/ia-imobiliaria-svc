@@ -1,0 +1,15 @@
+process.env.NODE_ENV = 'test';
+process.env.PORT = '3100';
+process.env.LOG_LEVEL = 'error';
+process.env.API_KEYS = 'test-consumer-key:tenant-test';
+process.env.GEMINI_API_KEY = 'test-gemini-api-key';
+process.env.GEMINI_MODEL = 'gemini-3.1-flash-lite';
+process.env.GEMINI_FALLBACK_MODELS = '';
+process.env.AI_FALLBACK_ENABLED = 'false';
+process.env.AI_MAX_RETRIES = '0';
+process.env.RATE_LIMIT_ENABLED = 'false';
+process.env.IDEMPOTENCY_ENABLED = 'true';
+process.env.SWAGGER_ENABLED = 'false';
+process.env.CORS_ORIGINS = 'http://localhost:3001';
+process.env.MAX_DOCUMENT_SIZE_MB = '5';
+process.env.MAX_DOCUMENT_PAGES = '50';

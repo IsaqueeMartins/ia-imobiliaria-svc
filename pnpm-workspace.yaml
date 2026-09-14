@@ -1,0 +1,8 @@
+allowBuilds:
+  '@google/genai': false
+  '@parcel/watcher': true
+  '@scarf/scarf': false
+  protobufjs: false
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - zod@4.6.5
