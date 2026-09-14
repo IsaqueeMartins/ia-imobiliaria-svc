@@ -131,7 +131,16 @@ cp .env.example .env
 
 ## Configuração
 
-Todas as configurações vêm de variáveis de ambiente, validadas por Zod na inicialização via `@nestjs/config`. A aplicação **falha rapidamente** se uma variável obrigatória estiver ausente ou inválida (por exemplo, R2 parcialmente configurado, CORS com `*` em produção, ausência de API keys de consumidor).
+Todas as configurações vêm de variáveis de ambiente, validadas por Zod na inicialização via `@nestjs/config`. A aplicação **falha rapidamente** se uma variável obrigatória estiver ausente ou inválida (por exemplo, R2 parcialmente configurado, CORS com `*` em produção, ausência de API keys de consumidor). Todos os problemas encontrados são reportados de uma só vez:
+
+```
+[Nest] ERROR [ExceptionHandler] EnvValidationError: Invalid configuration: the AI service cannot start.
+
+  - GEMINI_API_KEY: GEMINI_API_KEY is required. Create a key at https://aistudio.google.com/apikey and set it in the environment
+  - API_KEYS: At least one consumer credential is required: set API_KEYS=consumer-key or API_KEYS=consumer-key:tenant-id
+
+Provide the variables above through the process environment or a .env file (see .env.example) and start the service again.
+```
 
 | Variável | Obrigatória | Padrão | Descrição |
 | --- | --- | --- | --- |

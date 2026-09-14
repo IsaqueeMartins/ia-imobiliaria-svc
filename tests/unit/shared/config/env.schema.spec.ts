@@ -1,4 +1,8 @@
-import { validateEnv } from '../../../../src/shared/config/env.schema';
+import {
+  EnvValidationError,
+  formatEnvIssues,
+  validateEnv,
+} from '../../../../src/shared/config/env.schema';
 
 const REQUIRED = {
   API_KEYS: 'consumer-key',
@@ -59,6 +63,33 @@ describe('env schema', () => {
     expect(() => validateEnv({ API_KEYS: 'consumer-key' })).toThrow(/GEMINI_API_KEY/);
   });
 
+  it('reports configuration problems in a readable, actionable message', () => {
+    try {
+      validateEnv({});
+      throw new Error('expected the validation to fail');
+    } catch (error) {
+      const envError = error as EnvValidationError;
+      expect(envError.name).toBe('EnvValidationError');
+      expect(envError.issues.map((issue) => issue.variable).sort()).toEqual([
+        'API_KEYS',
+        'GEMINI_API_KEY',
+      ]);
+      expect(envError.message).toContain('Invalid configuration: the AI service cannot start.');
+      expect(envError.message).toContain('- GEMINI_API_KEY:');
+      expect(envError.message).toContain('https://aistudio.google.com/apikey');
+      expect(envError.message).toContain('API_KEYS=consumer-key:tenant-id');
+      expect(envError.message).toContain('.env.example');
+    }
+  });
+
+  it('formats environment issues without duplicating help text', () => {
+    const message = formatEnvIssues([{ variable: 'PORT', message: 'must be a number' }]);
+
+    expect(message.split('\n')[1]).toBe('');
+    expect(message).toContain('  - PORT: must be a number');
+    expect(message.match(/Invalid configuration/g)).toHaveLength(1);
+  });
+
   it('rejects partially configured storage', () => {
     expect(() =>
       validateEnv({ ...REQUIRED, R2_ACCOUNT_ID: 'account', R2_BUCKET: 'bucket' }),
@@ -81,7 +112,7 @@ describe('env schema', () => {
 
   it('rejects wildcard CORS in production', () => {
     expect(() => validateEnv({ ...REQUIRED, NODE_ENV: 'production', CORS_ORIGINS: '*' })).toThrow(
-      /Wildcard CORS origin is not allowed in production/,
+      /CORS_ORIGINS must not contain/,
     );
   });
 
